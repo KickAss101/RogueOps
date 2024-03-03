@@ -15,30 +15,32 @@
         <h1 class="mb-4 text-center">Red Teaming Commands Generator</h1>
         <!-- Global Inputs -->
         <h2 class="mt-4">Global Values</h2>
-        <div class="form-group">
-            <label for="current-domain">Current Domain:</label>
-            <input type="text" class="form-control" id="current-domain" name="domain" required>
-        </div>
-        <div class="form-group">
-            <label for="parent-domain">Parent Domain:</label>
-            <input type="text" class="form-control" id="parent-domain" name="sid" required>
-        </div>
-        <div class="form-group">
-            <label for="current-sid">Current Domain SID:</label>
-            <input type="text" class="form-control" id="current-sid" name="target" required>
-        </div>
-        <div class="form-group">
-            <label for="parent-sid">Parent Domain SID:</label>
-            <input type="text" class="form-control" id="parent-sid" name="ticket" required>
-        </div>
-        <div class="form-group">
-            <label for="krbtgt">KRBTGT RC4:</label>
-            <input type="text" class="form-control" id="krbtgt" name="rc4" required>
-        </div>
-        <div class="form-group">
-            <label for="tools-path">Tools Path:</label>
-            <input type="text" class="form-control" id="tools-path" name="tools-path" required>
-        </div>
+        <form id="form-global">
+            <div class="form-group">
+                <label for="current-domain">Current Domain:</label>
+                <input type="text" class="form-control" id="current-domain" name="domain" required>
+            </div>
+            <div class="form-group">
+                <label for="parent-domain">Parent Domain:</label>
+                <input type="text" class="form-control" id="parent-domain" name="sid" required>
+            </div>
+            <div class="form-group">
+                <label for="current-sid">Current Domain SID:</label>
+                <input type="text" class="form-control" id="current-sid" name="target" required>
+            </div>
+            <div class="form-group">
+                <label for="parent-sid">Parent Domain SID:</label>
+                <input type="text" class="form-control" id="parent-sid" name="ticket" required>
+            </div>
+            <div class="form-group">
+                <label for="krbtgt">KRBTGT RC4:</label>
+                <input type="text" class="form-control" id="krbtgt" name="rc4" required>
+            </div>
+            <div class="form-group">
+                <label for="tools-path">Tools Path:</label>
+                <input type="text" class="form-control" id="tools-path" name="tools-path" required>
+            </div>
+        </form>
         
         <!-- Tabs -->
         <ul class="nav nav-tabs">
