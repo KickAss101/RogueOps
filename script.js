@@ -161,7 +161,7 @@ function generateDumpHashesCommand() {
 	if (tool == "invoke-mimikatz") {
 		var command = `${tool} -Command '${flags}'`;
 	} else {
-		var command = `${toolsPath}\${tool} ${flags}`;
+		var command = `${toolsPath}${tool} ${flags}`;
 	}
 
 	document.querySelector("#command-dump-hashes").value = command;
