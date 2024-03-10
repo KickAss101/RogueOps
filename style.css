@@ -1,6 +1,6 @@
 body {
-    background-color: #000;
-    color: #fff;
+    background: #151515 url("https://kickass101.github.io/assets/images/bkg.png") 0 0;
+    color: #eaeaea;
 }
 li,label {
     font-family: 'Courier New', Courier, monospace;
