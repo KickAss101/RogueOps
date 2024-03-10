@@ -2,6 +2,9 @@ body {
     background-color: #000;
     color: #fff;
 }
+li,label {
+    font-family: 'Courier New', Courier, monospace;
+}
 .form-control {
     background-color: #222;
     color: #fff;
@@ -25,7 +28,14 @@ body {
     background-color: #0056b3;
     border-color: #0056b3;
 }
-
+[data-toggle="tooltip"] {
+    border-bottom: 1px dotted #ccc;
+    cursor: help;
+}
+pre {
+    font-weight: bold;
+    font-size: 1em;
+}
 /* Hide the default radio button */
 input[type="radio"] {
     appearance: none;

