@@ -42,7 +42,7 @@ document.querySelectorAll('#generate-command').forEach(function(element) {
 		if (activeTab === "#nav-cross-forest") {
 			generateCrossForestCommand();
 		} else if (activeTab === "#nav-inter-forest") {
-			generateInterForestCommand();
+			generateInterForestCommand(form_id);
 		} else if (activeTab === "#nav-kerberor-tickets") {
 			generateKerberosTicketsCommand(form_id);
 		} else if (activeTab === "#nav-dump-hashes") {
@@ -56,7 +56,7 @@ document.querySelectorAll('#generate-command').forEach(function(element) {
 });
 
 // Function to generate command for Cross Forest tab
-function generateCrossForestCommand() {
+function generateCrossForestCommand(form_id) {
 	let rc4 = document.querySelector("#form-cross-tgt #trust-ntlm")?.value ?? "";
 	let aes256 = document.querySelector("#form-cross-tgt #trust-aes")?.value ?? "";
 	let user = document.querySelector("#form-cross-tgt #user")?.value ?? "";
@@ -81,8 +81,10 @@ function generateCrossForestCommand() {
 
 	commandTGS = `${toolsPath}rubeus.exe asktgs /user:${user} /service:${serviceSPN} /dc:${dc} /ptt /ticket:${ticket}`;
 
-	document.querySelector("#command-cross-tgt").value = commandTGT;
-	document.querySelector("#command-cross-tgs").value = commandTGS;
+	if (form_id == "form-cross-tgt")
+		document.querySelector("#command-cross-tgt").value = commandTGT;
+	else if (form_id == "form-cross-tgs")
+		document.querySelector("#command-cross-tgs").value = commandTGS;
 }
 
 // Function to generate command for Inter Forest tab
